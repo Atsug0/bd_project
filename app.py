@@ -2,12 +2,16 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.tix import COLUMN
 from tkinter.ttk import Style, Treeview
-from obj import *
+from companies import Companie
+
+from products import Product
+from transactions import Transactions
+
 
 # Création de listes d'objets
-products_list = [Products(i, i*10, f"Product{i}", i*100) for i in range(1, 11)]
+products_list = [Product(i, i*10, f"Product{i}", i*100) for i in range(1, 11)]
 transactions_list = [Transactions(i, i, i*5, f"Transaction{i}", "Sale", f"Company{i}") for i in range(1, 11)]
-companies_list = [Companies(i, f"Company{i}", i*1000) for i in range(1, 11)]
+companies_list = [Companie(i, f"Company{i}", i*1000) for i in range(1, 11)]
 
 #page principal
 root = Tk()
