@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import messagebox
-from tkinter.tix import COLUMN
 from tkinter.ttk import Style, Treeview
 from companies import Companie
 
@@ -115,7 +114,7 @@ def part_page():
         tree.column(col, anchor="center",width=100)
 
     for companies in companies_list:
-        tree.insert("", "end", values=(companies.company_id, companies.company_name, companies.budget,))
+        tree.insert("", "end", values=(companies.companie_id, companies.companie_name, companies.budget,))
     tree.pack(pady=10)
     part_page.pack(pady=20)
 
