@@ -1,4 +1,7 @@
 import psycopg2
+from transactions import Transactions
+from companies import Companie
+from products import Product
 
 # Informations de connexion à la base de données
 db_params = {
@@ -26,12 +29,7 @@ def get_product_list():
 
         for row in rows:
             product_id, amount, product_name, price = row
-            product = {
-                'product_id': product_id,
-                'amount': amount,
-                'product_name': product_name,
-                'price': price
-            }
+            product = Product(product_id, amount, product_name, price)
             product_list.append(product)
 
         cursor.close()
@@ -60,17 +58,8 @@ def get_transaction_list():
         rows = cursor.fetchall()
 
         for row in rows:
-            transaction_id,product_id, amount, product_name,transaction_type,company_name,cost,company_id  = row
-            transaction = {
-                'transaction_id': transaction_id,
-                'product_id': product_id,
-                'company_id' : company_id,
-                'amount': amount,
-                'product_name': product_name,
-                'transaction_type':transaction_type,
-                'company_name': company_name,
-                'cost': cost
-            }
+            transaction_id,product_id, amount, product_name,company_name,cost,company_id  = row
+            transaction = Transactions(transaction_id,product_id,amount,product_name,company_name)
             transaction_list.append(transaction)
 
         cursor.close()
@@ -101,11 +90,7 @@ def get_companies_list():
 
         for row in rows:
             company_id,company_name,budget  = row
-            company = {
-                'company_id' : company_id,
-                'company_name': company_name,
-                'budget': budget
-            }
+            company = Companie(company_id, company_name, budget)
             companies_list.append(company)
 
         cursor.close()

@@ -2,14 +2,13 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Style, Treeview
 from companies import Companie
-
 from products import Product
 from transactions import Transactions
 
 
 # Création de listes d'objets
 products_list = [Product(i, i*10, f"Product{i}", i*100) for i in range(1, 11)]
-transactions_list = [Transactions(i, i, i*5, f"Transaction{i}", "Sale", f"Company{i}") for i in range(1, 11)]
+transactions_list = [Transactions(i, i, i*5, f"Transaction{i}", f"Company{i}") for i in range(1, 11)]
 companies_list = [Companie(i, f"Company{i}", i*1000) for i in range(1, 11)]
 
 #page principal
@@ -52,7 +51,7 @@ def histo_page():
     lb = Label(histo_page, text='Historique des transactions', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
     tree = Treeview(histo_page,style="mystyle.Treeview")
-    tree["columns"] = ("Transaction_ID", "Product_ID", "Amount", "Product_Name", "Transaction_Type", "Company_Name")
+    tree["columns"] = ("Transaction_ID", "Product_ID", "Amount", "Product_Name", "Company_Name")
     style = Style()
     style.theme_use("clam")
 
@@ -66,7 +65,7 @@ def histo_page():
         tree.column(col, anchor="center",width=100)
 
     for transaction in transactions_list:
-        tree.insert("", "end", values=(transaction.transaction_id, transaction.product_id, transaction.amount, transaction.product_name, transaction.transaction_type, transaction.company_name))
+        tree.insert("", "end", values=(transaction.transaction_id, transaction.product_id, transaction.amount, transaction.product_name, transaction.company_name))
     tree.pack(pady=10)
     histo_page.pack(pady=20)
 

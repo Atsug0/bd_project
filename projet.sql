@@ -25,7 +25,6 @@ CREATE TABLE transactions(
     company_id INTEGER,
     amount INTEGER,
     product_name VARCHAR(50),
-    transaction_type VARCHAR(50),
     cost INTEGER,
     company_name VARCHAR(50)
 
