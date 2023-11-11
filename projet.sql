@@ -2,14 +2,14 @@
 CREATE DATABASE stock_management;
 
 
-CREATE TABLE product(
+CREATE TABLE products(
     product_id serial PRIMARY KEY,
     amount INTEGER,
     product_name VARCHAR(50),
     price FLOAT
 );
 
-INSERT INTO product (amount, product_name, price)
+INSERT INTO products (amount, product_name, price)
 VALUES
     (100, 'Ordinateur portable', 800.00),
     (50, 'Souris sans fil', 20.00),
@@ -38,14 +38,14 @@ VALUES
     (4, 15, 'Écran LED 24 pouces', 'Gadget Shop', 2250,4),
     (5, 2, 'Casque audio Bluetooth', 'SoundZone', 140,5);
 
-CREATE TABLE company(
+CREATE TABLE companies(
     company_id serial PRIMARY KEY,
     company_name VARCHAR(50),
     budget FLOAT 
 );
 
 
-INSERT INTO company (company_name, budget)
+INSERT INTO companies (company_name, budget)
 VALUES
     ('ABC Electronics', 5000.00),
     ('TechStore', 3000.00),

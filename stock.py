@@ -8,7 +8,7 @@ db_params = {
     'host': 'localhost',  # Adresse IP du serveur PostgreSQL
     'database': 'stock_management',  # Nom de la base de données
     'user': 'postgres',  # Nom d'utilisateur PostgreSQL
-    'password': ''  # Mot de passe PostgreSQL
+    'password': 'wasssql'  # Mot de passe PostgreSQL
 }
 
 def get_product_list():
@@ -24,7 +24,7 @@ def get_product_list():
 
         cursor = connection.cursor()
 
-        cursor.execute("SELECT * FROM product")
+        cursor.execute("SELECT * FROM products")
         rows = cursor.fetchall()
 
         for row in rows:
@@ -51,7 +51,6 @@ def get_transaction_list():
 
     try:
         connection = psycopg2.connect(**db_params)
-
         cursor = connection.cursor()
 
         cursor.execute("SELECT * FROM transactions")
@@ -63,7 +62,7 @@ def get_transaction_list():
 
         cursor.close()
         connection.close()
-
+        
     except (Exception, psycopg2.Error) as error:
         print("Erreur lors de la connexion à la base de données:", error)
 
@@ -74,7 +73,7 @@ def get_transaction_list():
 def get_companies_list():
 
     """
-        Récupère toutes les informations de la table 'company'.
+        Récupère toutes les informations de la table 'companies'.
 
     """
     companies_list = []
@@ -84,7 +83,7 @@ def get_companies_list():
 
         cursor = connection.cursor()
 
-        cursor.execute("SELECT * FROM company")
+        cursor.execute("SELECT * FROM companies")
         rows = cursor.fetchall()
 
         for row in rows:
@@ -111,7 +110,7 @@ def update_amount_product(id_product :int,n : int):
     try:
         connection = psycopg2.connect(**db_params)
         cursor = connection.cursor()
-        cursor.execute("UPDATE product SET amount = amount +%s WHERE product_id = %s ",(n,id_product))
+        cursor.execute("UPDATE products SET amount = amount +%s WHERE product_id = %s ",(n,id_product))
         connection.commit()
         cursor.close()
         connection.close()
@@ -131,7 +130,7 @@ def update_budget_company(id_company : int , n : float):
     try:
         connection = psycopg2.connect(**db_params)
         cursor = connection.cursor()
-        cursor.execute("UPDATE company SET budget = budget +%s WHERE company_id = %s ",(n,id_company))
+        cursor.execute("UPDATE companies SET budget = budget +%s WHERE company_id = %s ",(n,id_company))
         connection.commit()
         cursor.close()
         connection.close()
@@ -158,20 +157,7 @@ def add_transcaction(product_id, amount, product_name, company_name, cost, compa
         print("Erreur lors de la connexion à la base de données:", error)
 
 
-products = get_product_list()
-for product in products:
-    print(product)
 
-
-
-transactions = get_transaction_list()
-for transaction in transactions:
-    print(transaction)
-
-
-companies = get_companies_list()
-for company in companies:
-    print(company)
 
 
 #update_amount_product(1,-1)
