@@ -97,7 +97,7 @@ def validate2(selected_option, selected_option2, counter_value,  companies_list,
             id_c = get_idc(companies_list, selected_option2)
             bud = get_bud(companies_list, selected_option2)
             amout = get_amoutp(product_list, selected_option)
-            if id_p == -1 or price_p == -1 or id_c == -1 or not is_budget_enough(companies_list, id_c, price_p * counter_value.get()) or not stock_produit_epuise(product_list, selected_option):
+            if id_p == -1 or price_p == -1 or id_c == -1 or bud < price_p * counter_value.get() or amout < counter_value.get():
                  messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
             else :
                 update_budget_company(id_c,- bud - (price_p * counter_value.get()))
