@@ -1,15 +1,10 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Style, Treeview
-from companies import Companie
-from products import Product
+from companies import Companie, get_bud, get_companies, get_idc, is_budget_enough
+from products import Product, get_amoutp, get_id, get_lst, get_price, product_name_exist, stock_produit_epuise
+from stock import add_transcaction, get_companies_list, get_product_list, get_transaction_list, update_amount_product, update_budget_company
 from transactions import Transactions
-
-
-# Création de listes d'objets
-products_list = [Product(i, i*10, f"Product{i}", i*100) for i in range(1, 11)]
-transactions_list = [Transactions(i, i, i*5, f"Transaction{i}", f"Company{i}") for i in range(1, 11)]
-companies_list = [Companie(i, f"Company{i}", i*1000) for i in range(1, 11)]
 
 #page principal
 root = Tk()
@@ -22,6 +17,7 @@ root.minsize(1000, 360)
 
 
 def home_page():
+    products_list = get_product_list()
     home_page = Frame(main_frame,bg='white')
     lb = Label(home_page, text='Le Stock', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
@@ -37,7 +33,7 @@ def home_page():
 
     for col in tree["columns"]:
         tree.heading(col, text=col)
-        tree.column(col, anchor="center",width=80)
+        tree.column(col, anchor="center",width=130)
 
     for product in products_list:
         tree.insert("", "end", values=(product.product_id, product.amount, product.product_name, product.price))
@@ -46,12 +42,13 @@ def home_page():
     home_page.pack(pady=20)
 
 def histo_page():
+    transactions_list = get_transaction_list()
     histo_page = Frame(main_frame,bg='white')
 
     lb = Label(histo_page, text='Historique des transactions', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
     tree = Treeview(histo_page,style="mystyle.Treeview")
-    tree["columns"] = ("Transaction_ID", "Product_ID", "Amount", "Product_Name", "Company_Name")
+    tree["columns"] = ("Transaction_ID", "Product_ID", "Amount", "Product_Name", "Company_Name", "Cost", "Company_id")
     style = Style()
     style.theme_use("clam")
 
@@ -62,39 +59,58 @@ def histo_page():
 
     for col in tree["columns"]:
         tree.heading(col, text=col)
-        tree.column(col, anchor="center",width=100)
+        if tree["columns"] != "Company_Name" :
+            tree.column(col, anchor="center",width=100)
+        else :
+            tree.column(col, anchor="center",width=130)
 
     for transaction in transactions_list:
-        tree.insert("", "end", values=(transaction.transaction_id, transaction.product_id, transaction.amount, transaction.product_name, transaction.company_name))
+        tree.insert("", "end", values=(transaction.transaction_id, transaction.product_id, transaction.amount, transaction.product_name, transaction.company_name, transaction.cost, transaction.company_id))
     tree.pack(pady=10)
     histo_page.pack(pady=20)
 
-def validate(selected_option, counter_value):
+def validate(selected_option, counter_value, product_list):
     try:
         counter_value.get()
-        if not selected_option or counter_value.get() <= 0:
+        if not selected_option or counter_value.get() <= 0 or product_name_exist(product_list, selected_option) == False:
         # Afficher une erreur et rafraîchir la page
             messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
         else:
-            # Effectuer une action avec les valeurs sélectionnées
-            messagebox.showinfo("Succès", f"il y a {counter_value.get()} {selected_option}s qui ont été ajouté au stock")
+            id = get_id(product_list, selected_option)
+            if id == -1: 
+                messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
+            else :
+                update_amount_product(id, counter_value.get())
+                messagebox.showinfo("Succès", f"il y a {counter_value.get()} {selected_option}s qui ont été ajouté au stock")
     except TclError :
         messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
 
-def validate2(selected_option, selected_option2, counter_value):
+def validate2(selected_option, selected_option2, counter_value,  companies_list, product_list):
     try:
         counter_value.get()
-        if not selected_option or not selected_option2 or counter_value.get() <= 0:
+        if not selected_option or not selected_option2 or counter_value.get() <= 0 or not product_name_exist(product_list, selected_option) or not stock_produit_epuise(product_list, selected_option) :
         # Afficher une erreur et rafraîchir la page
             messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
         else:
-            # Effectuer une action avec les valeurs sélectionnées
-            messagebox.showinfo("Succès", f"il y a {counter_value.get()} {selected_option}s qui ont été ajouté au stock")
+            id_p = get_id(product_list, selected_option)
+            price_p = get_price(product_list, selected_option)
+            id_c = get_idc(companies_list, selected_option2)
+            bud = get_bud(companies_list, selected_option2)
+            amout = get_amoutp(product_list, selected_option)
+            if id_p == -1 or price_p == -1 or id_c == -1 or not is_budget_enough(companies_list, id_c, price_p * counter_value.get()) or not stock_produit_epuise(product_list, selected_option):
+                 messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
+            else :
+                update_budget_company(id_c, bud - (price_p * counter_value.get()))
+                update_amount_product(id_p, amout - counter_value.get())
+                add_transcaction(id_p,counter_value.get(),selected_option, selected_option2, price_p * counter_value.get(), id_c)
+                #insert une ligne dans la db
+                messagebox.showinfo("Succès", f"il y a eu une transaction de {counter_value.get()} {selected_option}s vers le partenaire {selected_option2} pour un cout total de {price_p * counter_value.get()}$")
     except TclError :
         messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
     
 
 def part_page():
+    companies_list = get_companies_list()
     part_page = Frame(main_frame,bg='white')
     lb = Label(part_page, text='Nos partenaires', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
@@ -110,7 +126,7 @@ def part_page():
 
     for col in tree["columns"]:
         tree.heading(col, text=col)
-        tree.column(col, anchor="center",width=100)
+        tree.column(col, anchor="center",width=130)
 
     for companies in companies_list:
         tree.insert("", "end", values=(companies.companie_id, companies.companie_name, companies.budget,))
@@ -118,6 +134,7 @@ def part_page():
     part_page.pack(pady=20)
 
 def new_page():
+    products_list = get_product_list()
     new_page = Frame(main_frame, bg="white")
     lb = Label(new_page, text='Gestion du stock', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
@@ -128,7 +145,7 @@ def new_page():
     # Menu déroulant
     select_label = Label(new_page, text="Choisir le produit : (minimum 1)",font=('Bold', 13),bg='white',fg='black')
     select_label.pack(pady=20)
-    options = ["Company_ID", "Company_Name", "Budget"]
+    options = get_lst(products_list)
     option_menu = OptionMenu(new_page, selected_option, *options)
     option_menu.configure(background="white", fg="black")
     option_menu.pack(pady=10)
@@ -145,7 +162,7 @@ def new_page():
 
     # Bouton Valider
     
-    validate_button = Button(new_page, text="Valider", command=lambda: validate(selected_option.get(), counter_value),bg='white',bd=0,background="white")
+    validate_button = Button(new_page, text="Valider", command=lambda: validate(selected_option.get(), counter_value, products_list),bg='white',bd=0,background="white")
     validate_button.pack(pady=10)
     
     new_page.pack(pady=20)
@@ -161,6 +178,8 @@ def validate_entry(new_value):
         return False
         
 def transac_page():
+    companies_list = get_companies_list()
+    products_list = get_product_list()
     transac_page = Frame(main_frame, bg="white")
     lb = Label(transac_page, text='Créer une nouvelle transaction', font=('Bold', 13),bg='white',fg='black')
     lb.pack()
@@ -171,7 +190,7 @@ def transac_page():
     # Menu déroulant
     select_label = Label(transac_page, text="Choisir le produit :",font=('Bold', 13),bg='white',fg='black')
     select_label.pack(pady=20)
-    options = ["Company_ID", "Company_Name", "Budget"]
+    options = get_lst(products_list)
     option_menu = OptionMenu(transac_page, selected_option, *options)
     option_menu.configure(background="white", fg="black")
     option_menu.pack(pady=10)
@@ -189,12 +208,12 @@ def transac_page():
      # Menu déroulant
     select2_label = Label(transac_page, text="Choisir le partenaire :",font=('Bold', 13),bg='white',fg='black')
     select2_label.pack(pady=20)
-    options2 = ["Company_ID", "Company_Name", "Budget"]
+    options2 = get_companies(companies_list)
     option2_menu = OptionMenu(transac_page, selected_option2, *options2)
     option2_menu.configure(background="white", fg="black")
     option2_menu.pack(pady=10)
     
-    validate_button = Button(transac_page, text="Valider", command=lambda: validate2(selected_option.get(), selected_option2.get(),counter_value),bg='white',bd=0,background="white")
+    validate_button = Button(transac_page, text="Valider", command=lambda: validate2(selected_option.get(), selected_option2.get(),counter_value, companies_list, products_list),bg='white',bd=0,background="white")
     validate_button.pack(pady=10)
     
     transac_page.update_idletasks()
@@ -273,6 +292,6 @@ main_frame = Frame(root, highlightbackground='black',highlightthickness=2)
 main_frame.pack(side=LEFT)
 indicate(main_indicate, home_page)
 main_frame.pack_propagate(False)
-main_frame.configure(height=400,width=700,bg='white')
+main_frame.configure(height=400,width=1000,bg='white')
 root.configure(background='white')
 root.mainloop()
