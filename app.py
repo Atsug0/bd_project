@@ -100,7 +100,8 @@ def validate2(selected_option, selected_option2, counter_value,  companies_list,
             if id_p == -1 or price_p == -1 or id_c == -1 or bud < price_p * counter_value.get() or amout < counter_value.get():
                  messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
             else :
-                update_budget_company(id_c,- bud - (price_p * counter_value.get()))
+                print(bud,price_p,counter_value.get(),bud - (price_p * counter_value.get()))
+                update_budget_company(id_c,bud - (price_p * counter_value.get()))
                 update_amount_product(id_p, amout - counter_value.get())
                 add_transcaction(id_p,counter_value.get(),selected_option, selected_option2, price_p * counter_value.get(), id_c)
                 #insert une ligne dans la db

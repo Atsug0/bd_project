@@ -3,14 +3,19 @@ from transactions import Transactions
 from companies import Companie
 from products import Product
 
-# Informations de connexion à la base de données
-db_params = {
-    'host': 'localhost',  # Adresse IP du serveur PostgreSQL
-    'database': 'stock_management',  # Nom de la base de données
-    'user': 'postgres',  # Nom d'utilisateur PostgreSQL
-    'password': 'wasssql'  # Mot de passe PostgreSQL
-}
-
+#################################################################################
+# MODIFIER CES INFORMATIONS SELON LA CONFIGURATION DE VOTRE BASE DE DONNEES     #
+                                                                                #
+# Informations de connexion à la base de données                                #
+                                                                                #
+db_params = {                                                                   #
+    'host': 'localhost',  # Adresse IP du serveur PostgreSQL                    #
+    'database': 'stock_management',  # Nom de la base de données                # 
+    'user': 'postgres',  # Nom d'utilisateur PostgreSQL                         #
+    'password': ''  # Mot de passe PostgreSQL                                   #
+}                                                                               #
+                                                                                #
+#################################################################################
 def get_product_list():
 
     """
@@ -110,7 +115,7 @@ def update_amount_product(id_product :int,n : int):
     try:
         connection = psycopg2.connect(**db_params)
         cursor = connection.cursor()
-        cursor.execute("UPDATE products SET amount = amount +%s WHERE product_id = %s ",(n,id_product))
+        cursor.execute("UPDATE products SET amount = %s WHERE product_id = %s ",(n,id_product))
         connection.commit()
         cursor.close()
         connection.close()
@@ -130,7 +135,7 @@ def update_budget_company(id_company : int , n : float):
     try:
         connection = psycopg2.connect(**db_params)
         cursor = connection.cursor()
-        cursor.execute("UPDATE companies SET budget = budget +%s WHERE company_id = %s ",(n,id_company))
+        cursor.execute("UPDATE companies SET budget = %s WHERE company_id = %s ",(n,id_company))
         connection.commit()
         cursor.close()
         connection.close()
