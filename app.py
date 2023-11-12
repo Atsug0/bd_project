@@ -3,8 +3,16 @@ from tkinter import messagebox
 from tkinter.ttk import Style, Treeview
 from companies import Companie, get_bud, get_companies, get_idc, is_budget_enough
 from products import Product, get_amoutp, get_id, get_lst, get_price, product_name_exist, stock_produit_epuise
-from stock import add_transcaction, get_companies_list, get_product_list, get_transaction_list, update_amount_product, update_budget_company
 from transactions import Transactions
+
+os_user = input("Utilisateur Windows ? (o/n) ")
+if (os_user == "o" or os_user == "O"):
+    from stock_windows import add_transcaction, get_companies_list, get_product_list, get_transaction_list, update_amount_product, update_budget_company
+elif (os_user == "n" or os_user == "N"):
+    from stock import add_transcaction, get_companies_list, get_product_list, get_transaction_list, update_amount_product, update_budget_company
+else : 
+    print("Erreur,veuillez saisir une réponse valable (o/n).")
+    exit()
 
 #page principal
 root = Tk()
@@ -81,7 +89,7 @@ def validate(selected_option, counter_value, product_list):
                 messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
             else :
                 update_amount_product(id, counter_value.get())
-                messagebox.showinfo("Succès", f"il y a {counter_value.get()} {selected_option}s qui ont été ajouté au stock")
+                messagebox.showinfo("Succès", f"il y a {counter_value.get()} {selected_option}(s) qui ont été ajouté au stock")
     except TclError :
         messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
 
@@ -100,12 +108,12 @@ def validate2(selected_option, selected_option2, counter_value,  companies_list,
             if id_p == -1 or price_p == -1 or id_c == -1 or bud < price_p * counter_value.get() or amout < counter_value.get():
                  messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
             else :
-                print(bud,price_p,counter_value.get(),bud - (price_p * counter_value.get()))
                 update_budget_company(id_c,bud - (price_p * counter_value.get()))
                 update_amount_product(id_p, amout - counter_value.get())
                 add_transcaction(id_p,counter_value.get(),selected_option, selected_option2, price_p * counter_value.get(), id_c)
                 #insert une ligne dans la db
-                messagebox.showinfo("Succès", f"il y a eu une transaction de {counter_value.get()} {selected_option}s vers le partenaire {selected_option2} pour un cout total de {price_p * counter_value.get()}$")
+                messagebox.showinfo("Succès", f"il y a eu une transaction de {counter_value.get()} {selected_option}(s) vers le partenaire {selected_option2} pour un cout total de {price_p * counter_value.get()}$")
+                return 
     except TclError :
         messagebox.showerror("Erreur", "Veuillez sélectionner une option ou un compteur valide.")
     
@@ -214,7 +222,7 @@ def transac_page():
     option2_menu.configure(background="white", fg="black")
     option2_menu.pack(pady=10)
     
-    validate_button = Button(transac_page, text="Valider", command=lambda: validate2(selected_option.get(), selected_option2.get(),counter_value, companies_list, products_list),bg='white',bd=0,background="white")
+    validate_button = Button(transac_page, text="Valider", command=lambda: validate2(selected_option.get(), selected_option2.get(),counter_value,get_companies_list(), get_product_list()),bg='white',bd=0,background="white")
     validate_button.pack(pady=10)
     
     transac_page.update_idletasks()

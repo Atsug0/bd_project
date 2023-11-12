@@ -2,12 +2,12 @@
 CREATE DATABASE stock_management;
 
 
-CREATE TABLE products(
-    product_id serial PRIMARY KEY,
-    amount INTEGER,
-    product_name VARCHAR(50),
-    price FLOAT
-);
+CREATE TABLE IF NOT EXISTS products(
+        product_id serial PRIMARY KEY,
+        amount INTEGER,
+        product_name VARCHAR(50),
+        price FLOAT
+    );
 
 INSERT INTO products (amount, product_name, price)
 VALUES
@@ -19,16 +19,15 @@ VALUES
 
 
 
-CREATE TABLE transactions(
-    transaction_id serial PRIMARY KEY,
-    product_id INTEGER,
-    company_id INTEGER,
-    amount INTEGER,
-    product_name VARCHAR(50),
-    cost INTEGER,
-    company_name VARCHAR(50)
-
-);
+CREATE TABLE IF NOT EXISTS transactions(
+        transaction_id serial PRIMARY KEY,
+        product_id INTEGER,
+        company_id INTEGER,
+        amount INTEGER,
+        product_name VARCHAR(50),
+        cost INTEGER,
+        company_name VARCHAR(50)
+    );
 
 INSERT INTO transactions (product_id, amount, product_name, company_name, cost,company_id)
 VALUES
@@ -38,11 +37,11 @@ VALUES
     (4, 15, 'Écran LED 24 pouces', 'Gadget Shop', 2250,4),
     (5, 2, 'Casque audio Bluetooth', 'SoundZone', 140,5);
 
-CREATE TABLE companies(
-    company_id serial PRIMARY KEY,
-    company_name VARCHAR(50),
-    budget FLOAT 
-);
+CREATE TABLE IF NOT EXISTS company(
+        company_id serial PRIMARY KEY,
+        company_name VARCHAR(50),
+        budget FLOAT 
+    );
 
 
 INSERT INTO companies (company_name, budget)

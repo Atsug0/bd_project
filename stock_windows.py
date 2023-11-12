@@ -2,29 +2,20 @@ import psycopg2
 from transactions import Transactions
 from companies import Companie
 from products import Product
-from getpass import getpass
 
-
-host = input("Entrez l'adresse IP ou le nom d'hôte du serveur PostgreSQL [localhost] : ")
-database = input("Entrez le nom de la base de données [stock_management] : ")
-user = input("Entrez le nom d'utilisateur PostgreSQL [postgres] : ")
-password = getpass("Entrez le mot de passe PostgreSQL : ")
-
-if host == "":
-    host = "localhost"
-
-if database == "":
-    database = "stock_management"
-
-if user == "":
-    user = "postgres"
-
-db_params = {
-    'host': host,
-    'database': database,
-    'user': user,
-    'password': password,
-}
+#################################################################################
+# MODIFIER CES INFORMATIONS SELON LA CONFIGURATION DE VOTRE BASE DE DONNEES     #
+                                                                                #
+# Informations de connexion à la base de données                                #
+                                                                                #
+db_params = {                                                                   #
+    'host': 'localhost',  # Adresse IP du serveur PostgreSQL                    #
+    'database': 'stock_management',  # Nom de la base de données                # 
+    'user': 'postgres',  # Nom d'utilisateur PostgreSQL                         #
+    'password': 'wasssql'  # Mot de passe PostgreSQL                            #
+}                                                                               #
+                                                                                #
+#################################################################################
 def get_product_list():
 
     """
